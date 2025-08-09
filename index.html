@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reçete & Tarif Defteri</title>
+
+  <!-- iPhone/Android kısayol -->
+  <link rel="apple-touch-icon" sizes="180x180" href="recete-tarif-defteri-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#121212">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title">🍳 Reçete & Tarif Defteri</div>
+      <div class="search">
+        <input id="q" placeholder="Ara: tarif adı, etiket, malzeme…">
+        <button class="btn small ghost" id="clearSearch" type="button">Temizle</button>
+      </div>
+      <div class="toolbar">
+        <button class="btn small" id="addBtn" type="button">+ Yeni Tarif</button>
+        <button class="btn small ghost" id="exportBtn" type="button">Dışa Aktar</button>
+        <label class="btn small ghost" style="cursor:pointer" for="importFile">İçe Aktar</label>
+        <input type="file" id="importFile" accept="application/json" hidden>
+        <button class="btn small ghost" id="printBtn" type="button">Yazdır/PDF</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="panel">
+        <div class="muted">Etikete göre filtrele:</div>
+        <div id="tagBar" class="tagbar"></div>
+        <div id="list" class="list"></div>
+      </div>
+
+      <div class="detail" id="detail">
+        <div class="empty">Soldan bir tarif seçin ya da “+ Yeni Tarif” ile ekleyin.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="h1" id="modalTitle">Yeni Tarif</div>
+        <div class="toolbar">
+          <button class="btn ghost small" id="closeModal" type="button">Kapat</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="fName">Tarif Adı</label>
+          <input id="fName" type="text" placeholder="Örn: Fırında Tavuk & Sebze">
+        </div>
+        <div class="field">
+          <label for="fTags">Etiketler (virgülle ayır)</label>
+          <input id="fTags" type="text" placeholder="pratik, fırın, diyet">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="fServes">Porsiyon</label>
+          <input id="fServes" type="number" min="1" step="1" placeholder="4">
+        </div>
+        <div class="field">
+          <label for="fTime">Süre (dk)</label>
+          <input id="fTime" type="number" min="0" step="5" placeholder="35">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="fIngs">Malzemeler (her satır bir madde)</label>
+          <textarea id="fIngs" placeholder="2 adet tavuk göğsü
+1 kabak
+1 kırmızı biber
+1 soğan
+2 yemek kaşığı zeytinyağı
+tuz, karabiber"></textarea>
+        </div>
+        <div class="field">
+          <label for="fSteps">Adımlar (her satır bir adım)</label>
+          <textarea id="fSteps" placeholder="Fırını 190°C ısıt.
+Sebzeleri doğra.
+Tavukları doğrayıp baharatla karıştır.
+Yağlanmış tepsiye yay.
+35 dk pişir."></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="fPhoto">Kapak Görseli (isteğe bağlı)</label>
+          <input id="fPhoto" type="file" accept="image/*">
+          <img id="fPreview" class="preview" style="display:none" alt="">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+        <button class="btn warn" id="deleteBtn" type="button" style="display:none">Sil</button>
+        <button class="btn" id="saveBtn" type="button">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="diag" class="diag">Yükleniyor…</div>
+  <script defer src="app.js"></script>
+</body>
+</html>
