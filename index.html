@@ -60,17 +60,24 @@
     <div class="title">🍳 Reçete & Tarif Defteri</div>
     <div class="search">
       <input id="q" placeholder="Ara: tarif adı, etiket, malzeme…">
-      <button class="btn small ghost" id="clearSearch" type="button">Temizle</button>
+      <button class="btn small ghost" id="clearSearch" type="button"
+        onclick="document.getElementById('q').value='';(window.__renderList||function(){})();">
+        Temizle
+      </button>
     </div>
     <div class="toolbar">
       <button class="btn small" id="addBtn" type="button"
-      onclick="const m=document.getElementById('modal');m.classList.add('open');m.setAttribute('aria-hidden','false');setTimeout(()=>document.getElementById('fName')?.focus(),50);">
-      + Yeni Tarif
+        onclick="(function(){const m=document.getElementById('modal');m.classList.add('open');m.setAttribute('aria-hidden','false');setTimeout(()=>document.getElementById('fName')?.focus(),50);} )()">
+        + Yeni Tarif
       </button>
-      <button class="btn small ghost" id="exportBtn" type="button">Dışa Aktar</button>
+      <button class="btn small ghost" id="exportBtn" type="button"
+        onclick="(function(){try{const b=new Blob([localStorage.getItem('tarifdefteri.v1')||'{}'],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='tarifler.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}catch(e){alert('Dışa aktarma hatası')}})()">
+        Dışa Aktar
+      </button>
       <label class="btn small ghost" style="cursor:pointer" for="importFile">İçe Aktar</label>
-      <input type="file" id="importFile" accept="application/json" hidden>
-      <button class="btn small ghost" id="printBtn" type="button">Yazdır/PDF</button>
+      <input type="file" id="importFile" accept="application/json" hidden
+        onchange="(function(el){const f=el.files&&el.files[0];if(!f)return;const r=new FileReader();r.onload=function(){try{const o=JSON.parse(r.result);if(o&&Array.isArray(o.recipes)){localStorage.setItem('tarifdefteri.v1',JSON.stringify(o));location.reload();}else alert('Geçersiz dosya');}catch(e){alert('JSON okunamadı')}};r.readAsText(f)})(this)">
+      <button class="btn small ghost" id="printBtn" type="button" onclick="window.print()">Yazdır/PDF</button>
     </div>
   </header>
 
@@ -88,12 +95,15 @@
 </div>
 
 <!-- Modal -->
-<div class="modal" id="modal" aria-hidden="true">
+<div class="modal" id="modal" aria-hidden="true" onclick="if(event.target===this){this.classList.remove('open');this.setAttribute('aria-hidden','true');}">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <div class="h1" id="modalTitle">Yeni Tarif</div>
       <div class="toolbar">
-        <button class="btn ghost small" id="closeModal" type="button">Kapat</button>
+        <button class="btn ghost small" id="closeModal" type="button"
+          onclick="const m=document.getElementById('modal');m.classList.remove('open');m.setAttribute('aria-hidden','true');">
+          Kapat
+        </button>
       </div>
     </div>
 
@@ -142,14 +152,18 @@ Yağlanmış tepsiye yay.
     <div class="row">
       <div class="field">
         <label for="fPhoto">Kapak Görseli (isteğe bağlı)</label>
-        <input id="fPhoto" type="file" accept="image/*">
+        <input id="fPhoto" type="file" accept="image/*"
+          onchange="(function(el){const f=el.files&&el.files[0];if(!f)return;const r=new FileReader();r.onload=function(){var p=document.getElementById('fPreview');p.src=r.result;p.style.display='block';};r.readAsDataURL(f);} )(this)">
         <img id="fPreview" class="preview" style="display:none" alt="">
       </div>
     </div>
 
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-      <button class="btn warn" id="deleteBtn" type="button" style="display:none">Sil</button>
-      <button class="btn" id="saveBtn" type="button">Kaydet</button>
+      <button class="btn warn" id="deleteBtn" type="button" style="display:none"
+        onclick="(function(){const m=document.getElementById('modal');const id=m.dataset.editId;if(!id)return;const db=JSON.parse(localStorage.getItem('tarifdefteri.v1')||'{}');db.recipes=(db.recipes||[]).filter(x=>x.id!==id);localStorage.setItem('tarifdefteri.v1',JSON.stringify(db));m.classList.remove('open');m.setAttribute('aria-hidden','true');location.reload();})()">
+        Sil
+      </button>
+      <button class="btn" id="saveBtn" type="button" onclick="window.__fallbackSave && __fallbackSave()">Kaydet</button>
     </div>
   </div>
 </div>
@@ -165,13 +179,9 @@ Yağlanmış tepsiye yay.
   const listEl=$('#list'), detailEl=$('#detail'), tagBar=$('#tagBar'), qInput=$('#q');
   const modal=$('#modal');
   const fName=$('#fName'), fTags=$('#fTags'), fServes=$('#fServes'), fTime=$('#fTime'),
-        fIngs=$('#fIngs'), fSteps=$('#fSteps'), fPhoto=$('#fPhoto'), fPreview=$('#fPreview');
-  const btnAdd=$('#addBtn'), btnClose=$('#closeModal'), btnSave=$('#saveBtn'),
-        btnDelete=$('#deleteBtn'), btnPrint=$('#printBtn'),
-        btnExport=$('#exportBtn'), inpImport=$('#importFile'), btnClear=$('#clearSearch');
+        fIngs=$('#fIngs'), fSteps=$('#fSteps'), fPreview=$('#fPreview');
 
-  // Bağlandı rozeti
-  const ok = !!btnAdd && !!btnSave && !!modal && !!listEl && !!detailEl;
+  const ok = !!listEl && !!detailEl && !!modal && !!fName;
   diag.textContent = ok ? 'Butonlar bağlandı ✓' : 'Bağlama hatası ⛔';
   diag.classList.add(ok ? 'good' : 'bad');
 
@@ -246,9 +256,18 @@ Yağlanmış tepsiye yay.
           <div class="muted">Etiketler: ${(r.tags||[]).map(t=>'#'+t).join(' ')||'—'}</div>
           <div class="kvs"><div class="kv">⏱ ${r.time||'-'} dk</div><div class="kv">👥 ${r.serves||'-'} porsiyon</div><div class="kv">🗓 ${new Date(r.updated).toLocaleDateString()}</div></div>
           <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn small" id="editBtn" type="button">Düzenle</button>
-            <button class="btn small ghost" id="dupBtn" type="button">Kopya Oluştur</button>
-            <button class="btn small warn" id="delBtn" type="button">Sil</button>
+            <button class="btn small" id="editBtn" type="button"
+              onclick="(function(){const m=document.getElementById('modal');document.getElementById('modalTitle').textContent='Tarifi Düzenle';document.getElementById('deleteBtn').style.display='inline-flex';m.dataset.editId='${r.id}';document.getElementById('fName').value=${JSON.stringify(r.name)};document.getElementById('fTags').value=${JSON.stringify((r.tags||[]).join(', '))};document.getElementById('fServes').value='${r.serves||''}';document.getElementById('fTime').value='${r.time||''}';document.getElementById('fIngs').value=${JSON.stringify((r.ingredients||[]).map(i=>i.t).join('\\n'))};document.getElementById('fSteps').value=${JSON.stringify((r.steps||[]).join('\\n'))};(function(){var p=document.getElementById('fPreview');if(${JSON.stringify(r.photo||'')}!=''){p.src=${JSON.stringify(r.photo||'')};p.style.display='block';}else{p.src='';p.style.display='none';}})();m.classList.add('open');m.setAttribute('aria-hidden','false');setTimeout(()=>document.getElementById('fName').focus(),50);} )()">
+              Düzenle
+            </button>
+            <button class="btn small ghost" id="dupBtn" type="button"
+              onclick="(function(){const db=JSON.parse(localStorage.getItem('tarifdefteri.v1')||'{}');const u=Math.random().toString(36).slice(2,9);const copy=${JSON.stringify(r)};copy.id=u;copy.name=copy.name+' (Kopya)';copy.created=Date.now();copy.updated=Date.now();db.recipes=(db.recipes||[]);db.recipes.unshift(copy);localStorage.setItem('tarifdefteri.v1',JSON.stringify(db));location.reload();})()">
+              Kopya Oluştur
+            </button>
+            <button class="btn small warn" id="delBtn" type="button"
+              onclick="(function(){if(!confirm('Bu tarifi silmek istiyor musunuz?'))return;const db=JSON.parse(localStorage.getItem('tarifdefteri.v1')||'{}');db.recipes=(db.recipes||[]).filter(x=>x.id!=='${r.id}');localStorage.setItem('tarifdefteri.v1',JSON.stringify(db));location.reload();})()">
+              Sil
+            </button>
           </div>
         </div>
       </div>
@@ -259,85 +278,55 @@ Yağlanmış tepsiye yay.
       const idx=Number(e.target.dataset.ing);
       if(!isNaN(idx) && r.ingredients[idx]){ r.ingredients[idx].done=e.target.checked; r.updated=Date.now(); save(); }
     });
-    $('#editBtn',detailEl)?.addEventListener('click', ()=> openModal(r.id));
-    $('#dupBtn',detailEl)?.addEventListener('click', ()=>{
-      const c=JSON.parse(JSON.stringify(r)); c.id=uid(); c.name=r.name+' (Kopya)'; c.created=c.updated=Date.now();
-      data.recipes.unshift(c); save(); renderAll(); activeId=c.id; renderDetail();
-    });
-    $('#delBtn',detailEl)?.addEventListener('click', ()=>{
-      if(confirm('Bu tarifi silmek istiyor musunuz?')){ data.recipes=data.recipes.filter(x=>x.id!==r.id); save(); renderAll(); activeId=data.recipes[0]?.id||null; renderDetail(); }
-    });
   }
 
-  function openModal(id){
-    $('#modalTitle').textContent = id ? 'Tarifi Düzenle' : 'Yeni Tarif';
-    $('#deleteBtn').style.display = id ? 'inline-flex' : 'none';
-    if(id){
-      const r=data.recipes.find(x=>x.id===id);
-      fName.value=r.name||''; fTags.value=(r.tags||[]).join(', '); fServes.value=r.serves||''; fTime.value=r.time||'';
-      fIngs.value=(r.ingredients||[]).map(i=>i.t).join('\n'); fSteps.value=(r.steps||[]).join('\n');
-      fPreview.src=r.photo||''; 
-      fPreview.style.display = r.photo ? 'block' : 'none';
-      fPhoto.value=''; 
-      modal.dataset.editId=id;
+  // Fallback ile paylaşılan kayıt fonksiyonu
+  window.__fallbackSave = function(){
+    const $id = (x)=>document.getElementById(x);
+    const name = ($id('fName').value||'').trim();
+    if(!name){ alert('Tarif adı gerekli.'); $id('fName').focus(); return; }
+    const tags = ($id('fTags').value||'').split(',').map(s=>s.trim()).filter(Boolean).map(s=>s.toLowerCase());
+    const serves = parseInt($id('fServes').value)||null;
+    const time   = parseInt($id('fTime').value)||null;
+    const ingredients = ($id('fIngs').value||'').split('\n').map(s=>s.trim()).filter(Boolean).map(t=>({t,done:false}));
+    const steps = ($id('fSteps').value||'').split('\n').map(s=>s.trim()).filter(Boolean);
+    const photoEl = $id('fPreview');
+    const photo = (photoEl && photoEl.style.display!=='none' && photoEl.src) ? photoEl.src : '';
+    const now = Date.now();
+    const raw = localStorage.getItem(storeKey);
+    let db = {recipes:[]};
+    try{ if(raw) db = JSON.parse(raw) }catch(e){ db={recipes:[]} }
+
+    const editId = document.getElementById('modal').dataset.editId || '';
+    if(editId){
+      // düzenleme
+      db.recipes = (db.recipes||[]).map(r=>{
+        if(r.id!==editId) return r;
+        // malzemelerde done durumunu koru
+        const prevIngs = (r.ingredients||[]);
+        const newIngs = ingredients.map(i=>{
+          const p = prevIngs.find(x=>x.t===i.t);
+          return {t:i.t, done: p ? p.done : false};
+        });
+        return { ...r, name, tags, serves, time, ingredients:newIngs, steps, photo, updated:now };
+      });
     }else{
-      fName.value=''; fTags.value=''; fServes.value=''; fTime.value=''; fIngs.value=''; fSteps.value=''; fPhoto.value=''; fPreview.src=''; fPreview.style.display='none'; modal.dataset.editId='';
+      // yeni kayıt
+      const uid = Math.random().toString(36).slice(2,9);
+      db.recipes.unshift({ id:uid, name, tags, serves, time, ingredients, steps, photo, created:now, updated:now });
     }
-    modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
-    setTimeout(()=>fName.focus(),50);
-  }
-  function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
-
-  function handleSave(){
-    const name=fName.value.trim();
-    if(!name){ alert('Tarif adı gerekli.'); fName.focus(); return; }
-    const tags=fTags.value.split(',').map(s=>s.trim()).filter(Boolean).map(s=>s.toLowerCase());
-    const serves=Number(fServes.value)||null, time=Number(fTime.value)||null;
-    const ingredients=fIngs.value.split('\n').map(s=>s.trim()).filter(Boolean).map(s=>({t:s,done:false}));
-    const steps=fSteps.value.split('\n').map(s=>s.trim()).filter(Boolean);
-    const photo=fPreview.src && fPreview.style.display!=='none' ? fPreview.src : '';
-    const id=modal.dataset.editId;
-    if(id){
-      const r=data.recipes.find(x=>x.id===id);
-      Object.assign(r,{name,tags,serves,time,steps,photo});
-      r.ingredients=ingredients.map(i=>{ const prev=(r.ingredients||[]).find(p=>p.t===i.t); return {t:i.t,done:prev?prev.done:false}; });
-      r.updated=Date.now(); activeId=r.id;
-    }else{
-      const r={id:uid(),name,tags,serves,time,ingredients,steps,photo,created:Date.now(),updated:Date.now()};
-      data.recipes.unshift(r); activeId=r.id;
-    }
-    save(); closeModal(); renderAll(); renderDetail();
-  }
-
-  // Bağlamalar
-  document.getElementById('addBtn').addEventListener('click', ()=> openModal(null));
-  document.getElementById('closeModal').addEventListener('click', closeModal);
-  modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
-  document.getElementById('saveBtn').addEventListener('click', handleSave);
-
-  document.getElementById('printBtn').addEventListener('click', ()=> window.print());
-  document.getElementById('exportBtn').addEventListener('click', ()=>{
-    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='tarifler.json';
-    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1500);
-  });
-  document.getElementById('importFile').addEventListener('change', (e)=>{
-    const file=e.target.files?.[0]; if(!file) return;
-    const reader=new FileReader(); reader.onload=()=>{
-      try{ const obj=JSON.parse(reader.result);
-        if(obj && Array.isArray(obj.recipes)){ data=obj; save(); renderAll(); activeId=data.recipes[0]?.id||null; renderDetail(); }
-        else alert('Geçersiz dosya formatı.');
-      }catch(err){ alert('JSON okunamadı.'); }
-    }; reader.readAsText(file);
-  });
-  document.getElementById('q').addEventListener('input', renderList);
-  document.getElementById('clearSearch').addEventListener('click', ()=>{ qInput.value=''; renderList(); });
+    localStorage.setItem(storeKey, JSON.stringify(db));
+    const m=document.getElementById('modal'); m.classList.remove('open'); m.setAttribute('aria-hidden','true');
+    location.reload();
+  };
 
   // Başlat
   data = load();
   activeId = data.recipes[0]?.id || null;
   function renderAll(){ renderTagBar(); renderList(); }
+  window.__renderList = renderList; // temizle butonu fallback kullanır
   renderAll(); renderDetail();
+
 })();
 </script>
 </body>
