@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Reçete & Tarif Defteri</title>
 
-<!-- iPhone ana ekran ikonu (yolunu kendi ikonuna göre düzenle) -->
+<!-- iPhone ana ekran ikonu (kökte) -->
 <link rel="apple-touch-icon" sizes="180x180" href="recete-tarif-defteri-icon.png">
 <meta name="theme-color" content="#121212">
 
@@ -16,21 +16,20 @@
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Arial;color:var(--text);background:var(--bg)}
-  a{color:inherit;text-decoration:none}
   .app{max-width:1100px;margin:0 auto;padding:16px}
-  header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
+  header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap}
   .title{font-weight:700;font-size:20px;letter-spacing:.3px}
-  .search{flex:1;max-width:520px;display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+  .search{flex:1;min-width:260px;max-width:520px;display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
   .search input{flex:1;border:0;outline:0;background:transparent;color:var(--text);font-size:14px}
   .btn{border:0;border-radius:10px;background:var(--accent);color:#fff;font-weight:700;padding:10px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
   .btn.ghost{background:#2a2a2a}
   .btn.warn{background:#d32f2f}
   .btn.small{padding:6px 9px;font-weight:600}
   .toolbar{display:flex;gap:8px;flex-wrap:wrap}
-  /* layout */
+
   .grid{display:grid;gap:14px;grid-template-columns:1fr}
   @media(min-width:960px){ .grid{grid-template-columns:340px 1fr} }
-  /* sol kolon (filtre + liste) */
+
   .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
   .tagbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 10px}
   .chip{padding:6px 10px;border-radius:999px;background:#2a2a2a;border:1px solid var(--line);font-size:12px;cursor:pointer}
@@ -42,25 +41,23 @@
   .meta{display:flex;flex-direction:column;gap:4px}
   .meta .name{font-weight:700}
   .meta .sub{color:var(--muted);font-size:12px}
-  /* sağ kolon (detay) */
+
   .detail{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:260px}
   .hero{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
   .hero img{width:120px;height:120px;border-radius:14px;object-fit:cover;background:#101010;border:1px solid #222}
-  .hero .info{flex:1;min-width:220px}
   .h1{font-size:20px;font-weight:800;margin:0 0 6px}
   .muted{color:var(--muted);font-size:13px}
   .kvs{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
-  .kvs .kv{background:#171717;border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:12px}
+  .kv{background:#171717;border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:12px}
   .section{margin-top:14px}
   .section h3{margin:0 0 8px;font-size:14px;font-weight:800;letter-spacing:.3px}
   .inglist,.steplist{display:flex;flex-direction:column;gap:8px}
   .ing{display:flex;align-items:flex-start;gap:10px;background:#161616;border:1px solid #262626;border-radius:10px;padding:8px}
-  .ing input{transform:translateY(2px)}
   .step{display:flex;gap:8px;background:#161616;border:1px solid #262626;border-radius:10px;padding:10px}
   .num{min-width:26px;height:26px;border-radius:7px;background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-weight:800}
-  /* boş görünüm */
+
   .empty{display:grid;place-items:center;min-height:240px;color:var(--muted);text-align:center}
-  /* modal */
+
   .modal{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.5);z-index:10}
   .modal.open{display:flex}
   .sheet{background:var(--card);border-top-left-radius:16px;border-top-right-radius:16px;border:1px solid var(--line);width:100%;max-width:720px;padding:14px}
@@ -72,10 +69,7 @@
     background:#141414;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;font-size:14px;outline:none
   }
   textarea{min-height:90px;resize:vertical}
-  .taginput{display:flex;gap:6px;flex-wrap:wrap}
-  .taginput input{flex:1;min-width:120px}
-  .preview{width:100%;max-height:200px;object-fit:cover;border-radius:12px;border:1px solid #222;background:#0f0f0f}
-  /* yazdırma */
+
   @media print{
     .toolbar, header, .panel{display:none !important}
     .detail{border:0;padding:0}
@@ -93,65 +87,62 @@
       <button class="btn small ghost" id="clearSearch">Temizle</button>
     </div>
     <div class="toolbar">
-      <button class="btn small" id="addBtn">+ Yeni Tarif</button>
-      <button class="btn small ghost" id="exportBtn">Dışa Aktar</button>
-      <label class="btn small ghost" style="cursor:pointer">
-        İçe Aktar <input type="file" id="importFile" accept="application/json" hidden>
-      </label>
-      <button class="btn small ghost" id="printBtn">Yazdır/PDF</button>
+      <button class="btn small" id="addBtn" type="button">+ Yeni Tarif</button>
+      <button class="btn small ghost" id="exportBtn" type="button">Dışa Aktar</button>
+      <label class="btn small ghost" style="cursor:pointer" for="importFile">İçe Aktar</label>
+      <input type="file" id="importFile" accept="application/json" hidden>
+      <button class="btn small ghost" id="printBtn" type="button">Yazdır/PDF</button>
     </div>
   </header>
 
   <div class="grid">
-    <!-- Sol: filtre + liste -->
     <div class="panel">
       <div class="muted">Etikete göre filtrele:</div>
       <div id="tagBar" class="tagbar"></div>
       <div id="list" class="list"></div>
     </div>
 
-    <!-- Sağ: detay -->
     <div class="detail" id="detail">
       <div class="empty">Soldan bir tarif seçin ya da “+ Yeni Tarif” ile ekleyin.</div>
     </div>
   </div>
 </div>
 
-<!-- Modal: Tarif Ekle/Düzenle -->
-<div class="modal" id="modal">
-  <div class="sheet">
+<!-- Modal -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <div class="h1" id="modalTitle">Yeni Tarif</div>
       <div class="toolbar">
-        <button class="btn ghost small" id="closeModal">Kapat</button>
+        <button class="btn ghost small" id="closeModal" type="button">Kapat</button>
       </div>
     </div>
 
     <div class="row">
       <div class="field">
-        <label>Tarif Adı</label>
+        <label for="fName">Tarif Adı</label>
         <input id="fName" type="text" placeholder="Örn: Fırında Tavuk & Sebze">
       </div>
       <div class="field">
-        <label>Etiketler (virgülle ayır)</label>
+        <label for="fTags">Etiketler (virgülle ayır)</label>
         <input id="fTags" type="text" placeholder="pratik, fırın, diyet">
       </div>
     </div>
 
     <div class="row">
       <div class="field">
-        <label>Porsiyon</label>
+        <label for="fServes">Porsiyon</label>
         <input id="fServes" type="number" min="1" step="1" placeholder="4">
       </div>
       <div class="field">
-        <label>Süre (dk)</label>
+        <label for="fTime">Süre (dk)</label>
         <input id="fTime" type="number" min="0" step="5" placeholder="35">
       </div>
     </div>
 
     <div class="row">
       <div class="field">
-        <label>Malzemeler (her satır bir madde)</label>
+        <label for="fIngs">Malzemeler (her satır bir madde)</label>
         <textarea id="fIngs" placeholder="2 adet tavuk göğsü
 1 kabak
 1 kırmızı biber
@@ -160,7 +151,7 @@
 tuz, karabiber"></textarea>
       </div>
       <div class="field">
-        <label>Adımlar (her satır bir adım)</label>
+        <label for="fSteps">Adımlar (her satır bir adım)</label>
         <textarea id="fSteps" placeholder="Fırını 190°C ısıt.
 Sebzeleri doğra.
 Tavukları doğrayıp baharatla karıştır.
@@ -171,44 +162,65 @@ Yağlanmış tepsiye yay.
 
     <div class="row">
       <div class="field">
-        <label>Kapak Görseli (isteğe bağlı)</label>
+        <label for="fPhoto">Kapak Görseli (isteğe bağlı)</label>
         <input id="fPhoto" type="file" accept="image/*">
-        <img id="fPreview" class="preview" style="display:none" alt="">
+        <img id="fPreview" class="preview" style="display:none;width:100%;max-height:200px;object-fit:cover;border-radius:12px;border:1px solid #222;background:#0f0f0f" alt="">
       </div>
     </div>
 
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-      <button class="btn warn" id="deleteBtn" style="display:none">Sil</button>
-      <button class="btn" id="saveBtn">Kaydet</button>
+      <button class="btn warn" id="deleteBtn" type="button" style="display:none">Sil</button>
+      <button class="btn" id="saveBtn" type="button">Kaydet</button>
     </div>
   </div>
 </div>
 
 <script>
-/* ---------- Basit veri modeli ---------- */
-const storeKey = 'tarifdefteri.v1';
-let data = load();
-let activeId = null;
+document.addEventListener('DOMContentLoaded', () => {
+  /* --------- Güvenli seçiciler --------- */
+  const $ = (s,root=document)=>root.querySelector(s);
+  const listEl   = $('#list');
+  const detailEl = $('#detail');
+  const tagBar   = $('#tagBar');
+  const qInput   = $('#q');
 
-function load(){
-  try{
-    const raw = localStorage.getItem(storeKey);
-    return raw ? JSON.parse(raw) : sampleData();
-  }catch(e){ return sampleData() }
-}
-function save(){ localStorage.setItem(storeKey, JSON.stringify(data)) }
-function uid(){ return Math.random().toString(36).slice(2,9) }
+  const btnAdd   = $('#addBtn');
+  const btnClose = $('#closeModal');
+  const btnSave  = $('#saveBtn');
+  const btnDelete= $('#deleteBtn');
+  const btnPrint = $('#printBtn');
+  const btnExport= $('#exportBtn');
+  const inpImport= $('#importFile');
+  const btnClear = $('#clearSearch');
 
-/* ---------- Örnek başlangıç ---------- */
-function sampleData(){
-  return {
-    recipes: [{
+  const modal    = $('#modal');
+  const fName = $('#fName'), fTags = $('#fTags'), fServes = $('#fServes'), fTime = $('#fTime'),
+        fIngs = $('#fIngs'), fSteps = $('#fSteps'), fPhoto = $('#fPhoto'), fPreview = $('#fPreview');
+
+  // Tanı: buton bulunmuyorsa uyar
+  [['addBtn',btnAdd],['closeModal',btnClose],['saveBtn',btnSave]].forEach(([name,el])=>{
+    if(!el) console.warn('[UI] Eksik element:', name);
+  });
+
+  /* --------- Veri --------- */
+  const storeKey = 'tarifdefteri.v1';
+  let data = load();
+  let activeId = data.recipes[0]?.id || null;
+
+  function uid(){ return Math.random().toString(36).slice(2,9) }
+  function load(){
+    try{
+      const raw = localStorage.getItem(storeKey);
+      return raw ? JSON.parse(raw) : sampleData();
+    }catch(e){ return sampleData() }
+  }
+  function save(){ localStorage.setItem(storeKey, JSON.stringify(data)) }
+  function sampleData(){
+    return { recipes: [{
       id: uid(),
       name: "Fırında Sebzeli Tavuk",
       tags: ["pratik","fırın","akşam"],
-      serves: 4,
-      time: 35,
-      photo: "", // dataURL
+      serves: 4, time: 35, photo: "",
       ingredients: [
         {t:"2 adet tavuk göğsü",done:false},
         {t:"1 kabak",done:false},
@@ -223,276 +235,245 @@ function sampleData(){
         "Baharat ve yağla karıştır.",
         "Tepsiye yay, 35 dk pişir."
       ],
-      created: Date.now(),
-      updated: Date.now()
-    }]
-  };
-}
-
-/* ---------- UI yardımcıları ---------- */
-const $ = (s,root=document)=>root.querySelector(s);
-const $$ = (s,root=document)=>Array.from(root.querySelectorAll(s));
-const listEl = $('#list');
-const detailEl = $('#detail');
-const tagBar = $('#tagBar');
-const qInput = $('#q');
-
-/* ---------- Liste & filtre ---------- */
-function allTags(){
-  const set = new Set();
-  data.recipes.forEach(r => r.tags.forEach(t=>set.add(t)));
-  return Array.from(set).sort();
-}
-let tagFilter = null;
-
-function renderTagBar(){
-  tagBar.innerHTML = '';
-  const tags = allTags();
-  if(tags.length===0){ tagBar.innerHTML = '<span class="muted">Etiket yok</span>'; return; }
-  const any = document.createElement('div');
-  any.className = 'chip' + (tagFilter===null ? ' active':'');
-  any.textContent = 'Tümü';
-  any.onclick = ()=>{ tagFilter=null; renderAll() };
-  tagBar.appendChild(any);
-
-  tags.forEach(t=>{
-    const el = document.createElement('div');
-    el.className = 'chip' + (tagFilter===t ? ' active':'');
-    el.textContent = t;
-    el.onclick = ()=>{ tagFilter = (tagFilter===t?null:t); renderAll() };
-    tagBar.appendChild(el);
-  });
-}
-
-function matches(r, q){
-  if(!q) return true;
-  q = q.toLowerCase();
-  if(r.name.toLowerCase().includes(q)) return true;
-  if(r.tags.join(' ').toLowerCase().includes(q)) return true;
-  if(r.ingredients.some(i => i.t.toLowerCase().includes(q))) return true;
-  return false;
-}
-
-function renderList(){
-  const q = qInput.value.trim();
-  let items = data.recipes
-    .filter(r => (tagFilter? r.tags.includes(tagFilter) : true))
-    .filter(r => matches(r, q))
-    .sort((a,b)=>b.updated - a.updated);
-
-  listEl.innerHTML = '';
-  if(items.length===0){
-    listEl.innerHTML = '<div class="muted">Sonuç yok.</div>';
-    return;
+      created: Date.now(), updated: Date.now()
+    }]};
   }
-  items.forEach(r=>{
-    const card = document.createElement('div');
-    card.className = 'card';
-    const img = document.createElement('img');
-    img.className = 'thumb';
-    img.src = r.photo || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="100%" height="100%" fill="%23101010"/><text x="50%" y="55%" font-family="Arial" font-size="10" fill="%23333" text-anchor="middle">FOTO</text></svg>';
-    const meta = document.createElement('div');
-    meta.className = 'meta';
-    meta.innerHTML = `<div class="name">${escapeHtml(r.name)}</div>
-      <div class="sub">${r.tags.map(t=>'#'+t).join(' ')} • ${r.time||'-'} dk • ${r.serves||'-'} porsiyon</div>`;
-    card.appendChild(img); card.appendChild(meta);
-    card.onclick = ()=>{ activeId = r.id; renderDetail() };
-    listEl.appendChild(card);
-  });
-}
 
-/* ---------- Detay ---------- */
-function renderDetail(){
-  const r = data.recipes.find(x=>x.id===activeId);
-  if(!r){ detailEl.innerHTML = '<div class="empty">Soldan bir tarif seçin ya da “+ Yeni Tarif”.</div>'; return; }
+  /* --------- Filtre & Liste --------- */
+  let tagFilter = null;
+  function allTags(){
+    const set = new Set();
+    data.recipes.forEach(r => (r.tags||[]).forEach(t=>set.add(t)));
+    return [...set].sort();
+  }
+  function renderTagBar(){
+    tagBar.innerHTML = '';
+    const tags = allTags();
+    const any = document.createElement('div');
+    any.className = 'chip' + (tagFilter===null ? ' active':'');
+    any.textContent = 'Tümü';
+    any.onclick = ()=>{ tagFilter=null; renderAll(); };
+    tagBar.appendChild(any);
+    tags.forEach(t=>{
+      const el = document.createElement('div');
+      el.className = 'chip' + (tagFilter===t ? ' active':'');
+      el.textContent = t;
+      el.onclick = ()=>{ tagFilter = (tagFilter===t?null:t); renderAll(); };
+      tagBar.appendChild(el);
+    });
+  }
+  function matches(r, q){
+    if(!q) return true;
+    q = q.toLowerCase();
+    if((r.name||'').toLowerCase().includes(q)) return true;
+    if((r.tags||[]).join(' ').toLowerCase().includes(q)) return true;
+    if((r.ingredients||[]).some(i => (i.t||'').toLowerCase().includes(q))) return true;
+    return false;
+  }
+  function renderList(){
+    const q = qInput.value.trim();
+    const items = data.recipes
+      .filter(r => tagFilter? (r.tags||[]).includes(tagFilter) : true)
+      .filter(r => matches(r, q))
+      .sort((a,b)=>b.updated - a.updated);
 
-  const ingHTML = r.ingredients.map((ing,i)=>`
-    <label class="ing">
-      <input type="checkbox" ${ing.done?'checked':''} data-ing="${i}">
-      <div>${escapeHtml(ing.t)}</div>
-    </label>
-  `).join('');
+    listEl.innerHTML = '';
+    if(items.length===0){ listEl.innerHTML = '<div class="muted">Sonuç yok.</div>'; return; }
+    items.forEach(r=>{
+      const card = document.createElement('div');
+      card.className = 'card';
+      const img = document.createElement('img');
+      img.className = 'thumb';
+      img.src = r.photo || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="100%" height="100%" fill="%23101010"/><text x="50%" y="55%" font-family="Arial" font-size="10" fill="%23333" text-anchor="middle">FOTO</text></svg>';
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.innerHTML = `<div class="name">${esc(r.name)}</div>
+        <div class="sub">${(r.tags||[]).map(t=>'#'+t).join(' ')} • ${r.time||'-'} dk • ${r.serves||'-'} porsiyon</div>`;
+      card.appendChild(img); card.appendChild(meta);
+      card.onclick = ()=>{ activeId = r.id; renderDetail(); };
+      listEl.appendChild(card);
+    });
+  }
 
-  const stepHTML = r.steps.map((s,i)=>`
-    <div class="step">
-      <div class="num">${i+1}</div>
-      <div>${escapeHtml(s)}</div>
-    </div>
-  `).join('');
+  /* --------- Detay --------- */
+  function renderDetail(){
+    const r = data.recipes.find(x=>x.id===activeId);
+    if(!r){ detailEl.innerHTML = '<div class="empty">Soldan bir tarif seçin ya da “+ Yeni Tarif”.</div>'; return; }
 
-  detailEl.innerHTML = `
-    <div class="hero">
-      <img src="${r.photo || 'data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'120\\' height=\\'120\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23101010\\'/><text x=\\'50%\\' y=\\'55%\\' font-family=\\'Arial\\' font-size=\\'12\\' fill=\\'%23333\\' text-anchor=\\'middle\\'>FOTO</text></svg>'}" alt="">
-      <div class="info">
-        <h2 class="h1">${escapeHtml(r.name)}</h2>
-        <div class="muted">Etiketler: ${r.tags.map(t=>'#'+t).join(' ') || '—'}</div>
-        <div class="kvs">
-          <div class="kv">⏱ ${r.time||'-'} dk</div>
-          <div class="kv">👥 ${r.serves||'-'} porsiyon</div>
-          <div class="kv">🗓 ${new Date(r.updated).toLocaleDateString()}</div>
-        </div>
-        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn small" id="editBtn">Düzenle</button>
-          <button class="btn small ghost" id="dupBtn">Kopya Oluştur</button>
-          <button class="btn small warn" id="delBtn">Sil</button>
+    const ingHTML = (r.ingredients||[]).map((ing,i)=>`
+      <label class="ing">
+        <input type="checkbox" ${ing.done?'checked':''} data-ing="${i}">
+        <div>${esc(ing.t)}</div>
+      </label>`).join('');
+
+    const stepHTML = (r.steps||[]).map((s,i)=>`
+      <div class="step"><div class="num">${i+1}</div><div>${esc(s)}</div></div>`).join('');
+
+    detailEl.innerHTML = `
+      <div class="hero">
+        <img src="${r.photo || 'data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'120\\' height=\\'120\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23101010\\'/><text x=\\'50%\\' y=\\'55%\\' font-family=\\'Arial\\' font-size=\\'12\\' fill=\\'%23333\\' text-anchor=\\'middle\\'>FOTO</text></svg>'}" alt="">
+        <div class="info">
+          <h2 class="h1">${esc(r.name)}</h2>
+          <div class="muted">Etiketler: ${(r.tags||[]).map(t=>'#'+t).join(' ') || '—'}</div>
+          <div class="kvs">
+            <div class="kv">⏱ ${r.time||'-'} dk</div>
+            <div class="kv">👥 ${r.serves||'-'} porsiyon</div>
+            <div class="kv">🗓 ${new Date(r.updated).toLocaleDateString()}</div>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn small" id="editBtn" type="button">Düzenle</button>
+            <button class="btn small ghost" id="dupBtn" type="button">Kopya Oluştur</button>
+            <button class="btn small warn" id="delBtn" type="button">Sil</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="section">
-      <h3>Malzemeler</h3>
-      <div class="inglist" id="ingList">${ingHTML}</div>
-    </div>
+      <div class="section">
+        <h3>Malzemeler</h3>
+        <div class="inglist" id="ingList">${ingHTML}</div>
+      </div>
 
-    <div class="section">
-      <h3>Adımlar</h3>
-      <div class="steplist">${stepHTML}</div>
-    </div>
-  `;
+      <div class="section">
+        <h3>Adımlar</h3>
+        <div class="steplist">${stepHTML}</div>
+      </div>
+    `;
 
-  // Malzeme tiki güncelle
-  $('#ingList', detailEl).addEventListener('change', (e)=>{
-    const idx = Number(e.target.dataset.ing);
-    if(!isNaN(idx)){
-      r.ingredients[idx].done = e.target.checked;
-      r.updated = Date.now(); save();
+    $('#ingList', detailEl)?.addEventListener('change', (e)=>{
+      const idx = Number(e.target.dataset.ing);
+      if(!isNaN(idx) && r.ingredients[idx]){
+        r.ingredients[idx].done = e.target.checked;
+        r.updated = Date.now(); save();
+      }
+    });
+
+    $('#editBtn', detailEl)?.addEventListener('click', ()=> openModal(r.id));
+    $('#dupBtn', detailEl)?.addEventListener('click', ()=>{
+      const clone = JSON.parse(JSON.stringify(r));
+      clone.id = uid(); clone.name = r.name + ' (Kopya)';
+      clone.created = clone.updated = Date.now();
+      data.recipes.unshift(clone); save(); renderAll(); activeId = clone.id; renderDetail();
+    });
+    $('#delBtn', detailEl)?.addEventListener('click', ()=>{
+      if(confirm('Bu tarifi silmek istiyor musunuz?')){
+        data.recipes = data.recipes.filter(x=>x.id!==r.id);
+        save(); renderAll(); activeId = data.recipes[0]?.id || null; renderDetail();
+      }
+    });
+  }
+
+  /* --------- Modal --------- */
+  function openModal(id){
+    const editing = !!id;
+    $('#modalTitle').textContent = editing ? 'Tarifi Düzenle' : 'Yeni Tarif';
+    $('#deleteBtn').style.display = editing ? 'inline-flex':'none';
+
+    if(editing){
+      const r = data.recipes.find(x=>x.id===id);
+      fName.value = r.name || '';
+      fTags.value = (r.tags||[]).join(', ');
+      fServes.value = r.serves || '';
+      fTime.value = r.time || '';
+      fIngs.value = (r.ingredients||[]).map(i=>i.t).join('\n');
+      fSteps.value = (r.steps||[]).join('\n');
+      fPreview.src = r.photo || ''; fPreview.style.display = r.photo ? 'block':'none';
+      fPhoto.value = '';
+      modal.dataset.editId = id;
+    }else{
+      fName.value = ''; fTags.value = ''; fServes.value = ''; fTime.value = '';
+      fIngs.value = ''; fSteps.value = ''; fPhoto.value=''; fPreview.src=''; fPreview.style.display='none';
+      modal.dataset.editId = '';
+    }
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    setTimeout(()=>fName.focus(), 50);
+  }
+
+  function closeModal(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+  }
+
+  btnAdd?.addEventListener('click', ()=> openModal(null));
+  btnClose?.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+
+  btnDelete?.addEventListener('click', ()=>{
+    const id = modal.dataset.editId;
+    if(!id) return;
+    if(confirm('Bu tarifi silmek istiyor musunuz?')){
+      data.recipes = data.recipes.filter(x=>x.id!==id);
+      save(); closeModal(); renderAll(); activeId = null; renderDetail();
     }
   });
 
-  $('#editBtn', detailEl).onclick = ()=> openModal(r.id);
-  $('#dupBtn', detailEl).onclick = ()=>{
-    const clone = JSON.parse(JSON.stringify(r));
-    clone.id = uid();
-    clone.name = r.name + ' (Kopya)';
-    clone.created = clone.updated = Date.now();
-    data.recipes.unshift(clone); save(); renderAll(); activeId = clone.id; renderDetail();
-  };
-  $('#delBtn', detailEl).onclick = ()=>{
-    if(confirm('Bu tarifi silmek istiyor musunuz?')){
-      data.recipes = data.recipes.filter(x=>x.id!==r.id);
-      save(); renderAll(); activeId = data.recipes[0]?.id || null; renderDetail();
+  fPhoto.addEventListener('change', ()=>{
+    const file = fPhoto.files?.[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{ fPreview.src = reader.result; fPreview.style.display='block'; };
+    reader.readAsDataURL(file);
+  });
+
+  btnSave?.addEventListener('click', ()=>{
+    const name = fName.value.trim();
+    if(!name){ alert('Tarif adı gerekli.'); fName.focus(); return; }
+    const tags = fTags.value.split(',').map(s=>s.trim()).filter(Boolean).map(s=>s.toLowerCase());
+    const serves = Number(fServes.value)||null;
+    const time = Number(fTime.value)||null;
+    const ingredients = fIngs.value.split('\n').map(s=>s.trim()).filter(Boolean).map(s=>({t:s,done:false}));
+    const steps = fSteps.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    const photo = fPreview.src && fPreview.style.display!=='none' ? fPreview.src : '';
+
+    const id = modal.dataset.editId;
+    if(id){
+      const r = data.recipes.find(x=>x.id===id);
+      Object.assign(r, {name,tags,serves,time,steps,photo});
+      r.ingredients = ingredients.map(i=>{
+        const prev = (r.ingredients||[]).find(p=>p.t===i.t);
+        return {t:i.t, done: prev ? prev.done : false};
+      });
+      r.updated = Date.now(); activeId = r.id;
+    }else{
+      const r = { id:uid(), name,tags,serves,time,ingredients,steps,photo, created:Date.now(), updated:Date.now() };
+      data.recipes.unshift(r); activeId = r.id;
     }
-  };
-}
+    save(); closeModal(); renderAll(); renderDetail();
+  });
 
-/* ---------- Modal (ekle/düzenle) ---------- */
-const modal = $('#modal');
-const fName = $('#fName'), fTags = $('#fTags'), fServes = $('#fServes'), fTime = $('#fTime'), fIngs = $('#fIngs'), fSteps = $('#fSteps'), fPhoto = $('#fPhoto'), fPreview = $('#fPreview');
+  /* --------- Arama / Dışa-İçe Aktar / Yazdır --------- */
+  qInput.addEventListener('input', renderList);
+  btnClear?.addEventListener('click', ()=>{ qInput.value=''; renderList(); });
 
-$('#addBtn').onclick = ()=> openModal(null);
-$('#closeModal').onclick = ()=> modal.classList.remove('open');
-$('#deleteBtn').onclick = handleDelete;
-$('#saveBtn').onclick = handleSave;
+  btnPrint?.addEventListener('click', ()=> window.print());
 
-fPhoto.addEventListener('change', ()=>{
-  const file = fPhoto.files?.[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ()=>{ fPreview.src = reader.result; fPreview.style.display='block'; };
-  reader.readAsDataURL(file);
+  btnExport?.addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'tarifler.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+  });
+
+  inpImport?.addEventListener('change', (e)=>{
+    const file = e.target.files?.[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=> {
+      try{
+        const obj = JSON.parse(reader.result);
+        if(obj && Array.isArray(obj.recipes)){
+          data = obj; save(); renderAll(); activeId = data.recipes[0]?.id || null; renderDetail();
+        }else alert('Geçersiz dosya formatı.');
+      }catch(err){ alert('JSON okunamadı.'); }
+    };
+    reader.readAsText(file);
+  });
+
+  /* --------- Util & İlk render --------- */
+  function esc(s){ return String(s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])) }
+  function renderAll(){ renderTagBar(); renderList(); }
+  renderAll(); renderDetail();
 });
-
-function openModal(id){
-  const editing = !!id;
-  $('#modalTitle').textContent = editing ? 'Tarifi Düzenle' : 'Yeni Tarif';
-  $('#deleteBtn').style.display = editing ? 'inline-flex':'none';
-
-  if(editing){
-    const r = data.recipes.find(x=>x.id===id);
-    fName.value = r.name;
-    fTags.value = r.tags.join(', ');
-    fServes.value = r.serves || '';
-    fTime.value = r.time || '';
-    fIngs.value = r.ingredients.map(i=>i.t).join('\n');
-    fSteps.value = r.steps.join('\n');
-    fPreview.src = r.photo || ''; fPreview.style.display = r.photo ? 'block':'none';
-    fPhoto.value = '';
-    modal.dataset.editId = id;
-  }else{
-    fName.value = ''; fTags.value = ''; fServes.value = ''; fTime.value = '';
-    fIngs.value = ''; fSteps.value = ''; fPhoto.value=''; fPreview.src=''; fPreview.style.display='none';
-    modal.dataset.editId = '';
-  }
-  modal.classList.add('open');
-}
-
-function handleDelete(){
-  const id = modal.dataset.editId;
-  if(!id) return;
-  if(confirm('Bu tarifi silmek istiyor musunuz?')){
-    data.recipes = data.recipes.filter(x=>x.id!==id);
-    save(); modal.classList.remove('open'); renderAll(); activeId = null; renderDetail();
-  }
-}
-
-function parseList(text){
-  return text.split('\n').map(s=>s.trim()).filter(Boolean);
-}
-
-function handleSave(){
-  const name = fName.value.trim();
-  if(!name){ alert('Tarif adı gerekli.'); return; }
-  const tags = fTags.value.split(',').map(s=>s.trim()).filter(Boolean).map(s=>s.toLowerCase());
-  const serves = Number(fServes.value)||null;
-  const time = Number(fTime.value)||null;
-  const ingredients = parseList(fIngs.value).map(s=>({t:s,done:false}));
-  const steps = parseList(fSteps.value);
-  const photo = fPreview.src && fPreview.style.display!=='none' ? fPreview.src : '';
-
-  const id = modal.dataset.editId;
-  if(id){
-    const r = data.recipes.find(x=>x.id===id);
-    Object.assign(r, {name,tags,serves,time,steps,photo});
-    // malzemeleri güncellerken done durumlarını korumak adına eşleştirme:
-    r.ingredients = ingredients.map(i=>{
-      const prev = (r.ingredients||[]).find(p=>p.t===i.t);
-      return {t:i.t, done: prev ? prev.done : false};
-    });
-    r.updated = Date.now();
-    activeId = r.id;
-  }else{
-    const r = { id:uid(), name,tags,serves,time,ingredients,steps,photo, created:Date.now(), updated:Date.now() };
-    data.recipes.unshift(r);
-    activeId = r.id;
-  }
-  save(); modal.classList.remove('open'); renderAll(); renderDetail();
-}
-
-/* ---------- Arama / Dışa-İçe Aktar / Yazdır ---------- */
-qInput.addEventListener('input', renderList);
-$('#clearSearch').onclick = ()=>{ qInput.value=''; renderList(); };
-$('#printBtn').onclick = ()=> window.print();
-
-$('#exportBtn').onclick = ()=>{
-  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'tarifler.json';
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
-};
-
-$('#importFile').addEventListener('change', (e)=>{
-  const file = e.target.files?.[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ()=> {
-    try{
-      const obj = JSON.parse(reader.result);
-      if(obj && Array.isArray(obj.recipes)){
-        data = obj; save(); renderAll(); activeId = data.recipes[0]?.id || null; renderDetail();
-      }else alert('Geçersiz dosya formatı.');
-    }catch(err){ alert('JSON okunamadı.'); }
-  };
-  reader.readAsText(file);
-});
-
-/* ---------- Util ---------- */
-function escapeHtml(s){ return s.replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])) }
-
-/* ---------- İlk render ---------- */
-function renderAll(){ renderTagBar(); renderList(); }
-renderAll(); renderDetail();
 </script>
 </body>
 </html>
-
