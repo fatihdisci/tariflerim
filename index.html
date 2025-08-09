@@ -273,8 +273,10 @@ Yağlanmış tepsiye yay.
       const r=data.recipes.find(x=>x.id===id);
       fName.value=r.name||''; fTags.value=(r.tags||[]).join(', '); fServes.value=r.serves||''; fTime.value=r.time||'';
       fIngs.value=(r.ingredients||[]).map(i=>i.t).join('\n'); fSteps.value=(r.steps||[]).join('\n');
-      fPreview.src=r.photo||''; fPreview.style.display=r.photo?'b
-lock':'none'; fPhoto.value=''; modal.dataset.editId=id;
+      fPreview.src=r.photo||''; 
+      fPreview.style.display='block';  /* <-- DÜZELTİLEN SATIR */
+      fPhoto.value=''; 
+      modal.dataset.editId=id;
     }else{
       fName.value=''; fTags.value=''; fServes.value=''; fTime.value=''; fIngs.value=''; fSteps.value=''; fPhoto.value=''; fPreview.src=''; fPreview.style.display='none'; modal.dataset.editId='';
     }
