@@ -63,7 +63,10 @@
       <button class="btn small ghost" id="clearSearch" type="button">Temizle</button>
     </div>
     <div class="toolbar">
-      <button class="btn small" id="addBtn" type="button">+ Yeni Tarif</button>
+      <button class="btn small" id="addBtn" type="button"
+      onclick="const m=document.getElementById('modal');m.classList.add('open');m.setAttribute('aria-hidden','false');setTimeout(()=>document.getElementById('fName')?.focus(),50);">
+      + Yeni Tarif
+      </button>
       <button class="btn small ghost" id="exportBtn" type="button">Dışa Aktar</button>
       <label class="btn small ghost" style="cursor:pointer" for="importFile">İçe Aktar</label>
       <input type="file" id="importFile" accept="application/json" hidden>
@@ -274,7 +277,7 @@ Yağlanmış tepsiye yay.
       fName.value=r.name||''; fTags.value=(r.tags||[]).join(', '); fServes.value=r.serves||''; fTime.value=r.time||'';
       fIngs.value=(r.ingredients||[]).map(i=>i.t).join('\n'); fSteps.value=(r.steps||[]).join('\n');
       fPreview.src=r.photo||''; 
-      fPreview.style.display='block';  /* <-- DÜZELTİLEN SATIR */
+      fPreview.style.display = r.photo ? 'block' : 'none';
       fPhoto.value=''; 
       modal.dataset.editId=id;
     }else{
