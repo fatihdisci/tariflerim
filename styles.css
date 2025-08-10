@@ -58,3 +58,22 @@ textarea{min-height:90px;resize:vertical}
 .diag{position:fixed;right:10px;bottom:10px;background:#2a2a2a;border:1px solid #333;color:#ddd;border-radius:20px;padding:6px 10px;font-size:12px;z-index:10000}
 .diag.good{background:#1b5e20}
 .diag.bad{background:#8e0000}
+
+/* Mobil ekranlarda form ve buton düzeni */
+@media (max-width: 600px) {
+    .form-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-buttons button {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    /* Kaydet butonunun üst üste binmesini engelle */
+    .form-buttons button + button {
+        margin-top: 5px;
+    }
+}
