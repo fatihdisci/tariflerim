@@ -70,13 +70,6 @@
         onclick="(function(){var m=document.getElementById('modal');m.classList.add('open');m.setAttribute('aria-hidden','false');setTimeout(function(){var x=document.getElementById('fName');if(x)x.focus();},50);} )()">
         + Yeni Tarif
       </button>
-      <button class="btn small ghost" id="exportBtn" type="button"
-        onclick="(function(){try{var raw=localStorage.getItem('tarifdefteri.v1')||'{}';var b=new Blob([raw],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='tarifler.json';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},1500);}catch(e){alert('Dışa aktarma hatası')}})()">
-        Dışa Aktar
-      </button>
-      <label class="btn small ghost" style="cursor:pointer" for="importFile">İçe Aktar</label>
-      <input type="file" id="importFile" accept="application/json" hidden onchange="(function(el){var f=el.files&&el.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(o&&o.recipes&&o.recipes.splice){localStorage.setItem('tarifdefteri.v1',JSON.stringify(o));location.reload();}else alert('Geçersiz dosya');}catch(e){alert('JSON okunamadı')}};r.readAsText(f)})(this)">
-      <button class="btn small ghost" id="printBtn" type="button" onclick="window.print()">Yazdır/PDF</button>
     </div>
   </header>
 
@@ -162,7 +155,7 @@ Yağlanmış tepsiye yay.
         onclick="(function(){var m=document.getElementById('modal');var id=m.dataset.editId;if(!id)return;try{var db=JSON.parse(localStorage.getItem('tarifdefteri.v1')||'{}');db.recipes=(db.recipes||[]).filter(function(x){return x.id!==id});localStorage.setItem('tarifdefteri.v1',JSON.stringify(db));m.classList.remove('open');m.setAttribute('aria-hidden','true');location.reload();}catch(e){alert('Silme hatası')}})()">
         Sil
       </button>
-      <button class="btn" id="saveBtn" type="button" onclick="if(window.__fallbackSave){window.__fallbackSave();}">Kaydet</button>
+      <button class="btn" id="saveBtn" type="button">Kaydet</button>
     </div>
   </div>
 </div>
