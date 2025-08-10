@@ -14,16 +14,7 @@
         btnExport=$('#exportBtn'), inpImport=$('#importFile'), btnClear=$('#clearSearch');
 
   // Diagnostics
-  const ok = !!btnAdd && !!btnSave && !!modal && !!listEl && !!detailEl;
-  diag.textContent = ok ? 'Butonlar bağlandı ✓' : 'Bağlama hatası ⛔';
-  diag.classList.add(ok ? 'good' : 'bad');
-  // 2 sn sonra yumuşakça kaybolsun
-setTimeout(()=>{
-  if(!diag) return;
-  diag.style.transition = 'opacity .3s';
-  diag.style.opacity = '0';
-  setTimeout(()=>{ diag.style.display = 'none'; }, 300);
-}, 2000);
+if (diag) diag.style.display = 'none';
 
   // Data
   function uid(){ return Math.random().toString(36).slice(2,9) }
