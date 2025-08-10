@@ -14,7 +14,30 @@
         btnExport=$('#exportBtn'), inpImport=$('#importFile'), btnClear=$('#clearSearch');
 
   // Diagnostics
-if (diag) diag.style.display = 'none';
+// Diagnostics (2 sn göster, sonra gizle; ilk açılışta 1 kez)
+const ok = !!btnAdd && !!btnSave && !!modal && !!listEl && !!detailEl;
+
+if (diag && !localStorage.getItem('diag.seen')) {
+  diag.textContent = ok ? 'Butonlar bağlandı ✓' : 'Bağlama hatası ⛔';
+  diag.classList.remove('good','bad');
+  diag.classList.add(ok ? 'good' : 'bad');
+  diag.style.display = 'inline-block';
+  diag.setAttribute('aria-hidden','false');
+
+  setTimeout(()=>{
+    diag.style.transition = 'opacity .3s';
+    diag.style.opacity = '0';
+    setTimeout(()=>{
+      diag.style.display = 'none';
+      diag.setAttribute('aria-hidden','true');
+      diag.style.opacity = '1';
+    }, 300);
+    localStorage.setItem('diag.seen','1'); // bir daha açılışta gösterme
+  }, 2000);
+} else if (diag) {
+  diag.style.display = 'none';
+  diag.setAttribute('aria-hidden','true');
+}
 
   // Data
   function uid(){ return Math.random().toString(36).slice(2,9) }
